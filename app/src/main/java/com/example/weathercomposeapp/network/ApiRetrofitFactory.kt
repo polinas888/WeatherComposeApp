@@ -11,7 +11,7 @@ object ApiRetrofitFactory {
     private val authInterceptor = Interceptor { chain ->
         val newUrl = chain.request().url
             .newBuilder()
-            .addQueryParameter("key", BuildConfig.API_KEY)
+            .addQueryParameter("appid", BuildConfig.API_KEY)
             .build()
 
         val newRequest = chain.request()
