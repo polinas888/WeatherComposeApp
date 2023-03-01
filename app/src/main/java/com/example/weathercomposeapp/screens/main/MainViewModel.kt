@@ -16,17 +16,22 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val weatherRepository: WeatherRepository): ViewModel() {
    val weatherStateResult:MutableState<DataResult<Weather?>> = mutableStateOf(DataResult.Ok(null))
 
+    val isLoading: MutableState<Boolean> = mutableStateOf(false)
+
     init {
         getWeather()
     }
 
     private fun getWeather() {
         viewModelScope.launch {
+            isLoading.value = true
             try {
                 val weatherData = weatherRepository.getWeather("moscow")
                 weatherStateResult.value = weatherData
             } catch (e: Exception) {
               Log.e("No weather data", e.message.toString())
+            } finally {
+                isLoading.value = false
             }
         }
     }

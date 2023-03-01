@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,14 +30,21 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
-    //scale(size) of image
+    //scale(size) of image(make splash effect)
     val scale = remember {
         Animatable(0f)
     }
 
-    //key1 - make the coroutine run when it is true
+    //make image disappear before navigate to other screen(either way we have effect that image appear
+    // in left top conner before loader appears
+    val alpha = remember {
+        Animatable(1f)
+    }
+
+    //key1 - true- run just ones when compose, false - rerun if recomposed
     //animationSpec - tween, spring, repeatable, keyframes, snap, decay
-    //OvershootInterpolator - show interpolator(выброс) compose increase and after that decrease
+    //OvershootInterpolator - show interpolator(выброс) compose increase and after that decrease,
+    // easing - speed
     LaunchedEffect(key1 = true, block = {
         scale.animateTo(
             targetValue = 1f, tween(durationMillis = 1000, easing = {
@@ -44,6 +52,10 @@ fun SplashScreen(navController: NavController) {
             })
         )
         delay(2000)
+        alpha.animateTo(
+            targetValue = 0f,
+            animationSpec = tween(durationMillis = 500)
+        )
         navController.navigate(WeatherScreens.MainScreen.name)
     })
 
@@ -51,7 +63,9 @@ fun SplashScreen(navController: NavController) {
         modifier = Modifier
             .size(330.dp)
             .padding(16.dp)
-            .scale(scale.value), shape = CircleShape, border = BorderStroke(3.dp, Color.LightGray)
+            .scale(scale.value)
+            .alpha(alpha.value),
+             shape = CircleShape, border = BorderStroke(3.dp, Color.LightGray)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
