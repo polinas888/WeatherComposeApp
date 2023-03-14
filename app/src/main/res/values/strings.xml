@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeatherComposeApp</string>
+    <string name="this_week_text">This week</string>
+    <string name="no_weather_text">Weather data is not available.</string>
 </resources>

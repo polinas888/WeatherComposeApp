@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,9 +42,7 @@ fun MainScreen(navController: NavController, mainViewModel: MainViewModel = hilt
                         }) { innerPadding ->
                         //innerPadding will take into account the height of the top app bar
                         Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(innerPadding),
+                            modifier = Modifier.fillMaxSize().padding(innerPadding),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
@@ -60,14 +58,14 @@ fun MainScreen(navController: NavController, mainViewModel: MainViewModel = hilt
                             WeatherConditions(todayWeather)
                             Divider()
                             SunsetSunriseInfo(todayWeather)
-                            Text(text = "This week", style = MaterialTheme.typography.h6)
-                            WeekWeatherList()
+                            Text(text = stringResource(R.string.this_week_text), style = MaterialTheme.typography.h6)
+                            WeekWeatherList(weatherStateResult.response.list)
                         }
                     }
                 }
             }
             is DataResult.Error -> {
-                Text(text = "Weather data is not available.")
+                Text(text = stringResource(R.string.no_weather_text))
             }
         }
         if (mainViewModel.isLoading.value) {
@@ -77,21 +75,12 @@ fun MainScreen(navController: NavController, mainViewModel: MainViewModel = hilt
 }
 
 @Composable
-fun WeekWeatherList() {
-    Box(modifier = Modifier
-        .padding(4.dp).fillMaxWidth()
-        .clip(RoundedCornerShape(2.dp))
-        .background(Color(243, 243, 243, 255))) {
-        Text(text = "Some text")
-    }
-}
-@Composable
 fun CirclePictureWithData(imageUrl: String, temp: String, precipitation: String) {
     Box(
         modifier = Modifier
-            .size(200.dp)
+            .size(160.dp)
             .clip(CircleShape)
-            .background(Color(218, 200, 42, 255)),
+            .background(Color(214, 195, 26, 255)),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -134,8 +123,10 @@ fun SunsetSunriseInfo(todayWeather: DayWeather) {
 
 @Composable
 fun SunriseInfo(sunriseTime: Int) {
-    Row( verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
         Image(
             painter = painterResource(id = R.drawable.sunrise),
             contentDescription = "sunrise picture",
@@ -145,18 +136,20 @@ fun SunriseInfo(sunriseTime: Int) {
     }
 }
 
-    @Composable
-    fun SunsetInfo(sunsetTime: Int) {
-        Row( verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center) {
-            Text(text = createTimeString(sunsetTime), modifier = Modifier.padding(4.dp))
-            Image(
-                painter = painterResource(id = R.drawable.sunset),
-                contentDescription = "sunset picture",
-                modifier = Modifier.size(22.dp)
-            )
-        }
+@Composable
+fun SunsetInfo(sunsetTime: Int) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(text = createTimeString(sunsetTime), modifier = Modifier.padding(4.dp))
+        Image(
+            painter = painterResource(id = R.drawable.sunset),
+            contentDescription = "sunset picture",
+            modifier = Modifier.size(22.dp)
+        )
     }
+}
 
 
 @Composable
@@ -167,17 +160,17 @@ fun WeatherConditions(todayWeather: DayWeather) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        WeatherConditionInfo(
+        WeatherConditionItem(
             image = R.drawable.humidity,
             description = "humidity picture",
             conditionValue = todayWeather.humidity
         )
-        WeatherConditionInfo(
+        WeatherConditionItem(
             image = R.drawable.pressure,
             description = "pressure picture",
             conditionValue = todayWeather.pressure
         )
-        WeatherConditionInfo(
+        WeatherConditionItem(
             image = R.drawable.wind,
             description = "wind picture",
             conditionValue = todayWeather.speed.toInt()
@@ -186,16 +179,18 @@ fun WeatherConditions(todayWeather: DayWeather) {
 }
 
 @Composable
-fun WeatherConditionInfo(image:Int, description: String, conditionValue: Int) {
-    Row( verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center) {
+fun WeatherConditionItem(image: Int, description: String, conditionValue: Int) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
         Image(
             painter = painterResource(id = image),
             contentDescription = description,
             modifier = Modifier.size(22.dp)
         )
         fun getConditionString() =
-            when(image) {
+            when (image) {
                 R.drawable.humidity -> "$conditionValue%"
                 R.drawable.pressure -> "$conditionValue psi"
                 R.drawable.wind -> "$conditionValue m/sec"

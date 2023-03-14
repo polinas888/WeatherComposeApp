@@ -12,6 +12,11 @@ fun createDateString(dateMilsec: Int): String {
     return "${splitDate[0]}, ${splitDate[1]} ${splitDate[2]}"
 }
 
+fun getDayOfWeek(dateMilsec: Int): String {
+    val splitDate = createListOfDateElements(dateMilsec)
+    return "${splitDate[0]}"
+}
+
 fun createTimeString(dateMilsec: Int): String {
     val splitDate = createListOfDateElements(dateMilsec)
     val splitTime = splitDate[3].split(":")
