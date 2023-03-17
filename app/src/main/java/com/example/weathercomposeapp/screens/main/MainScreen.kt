@@ -21,6 +21,7 @@ import coil.compose.AsyncImage
 import com.example.weathercomposeapp.R
 import com.example.weathercomposeapp.components.TopAppBar
 import com.example.weathercomposeapp.model.DayWeather
+import com.example.weathercomposeapp.navigation.WeatherScreens
 import com.example.weathercomposeapp.repository.DataResult
 import com.example.weathercomposeapp.utils.createDateString
 import com.example.weathercomposeapp.utils.createTimeString
@@ -28,7 +29,7 @@ import com.example.weathercomposeapp.utils.getWeatherImageUrl
 import kotlin.math.roundToInt
 
 @Composable
-fun MainScreen(navController: NavController, mainViewModel: MainViewModel = hiltViewModel()) {
+fun MainScreen(navController: NavController, city: String, mainViewModel: MainViewModel = hiltViewModel()) {
     val weatherStateResult = mainViewModel.weatherStateResult.value
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -38,7 +39,7 @@ fun MainScreen(navController: NavController, mainViewModel: MainViewModel = hilt
                     val todayWeather = weatherStateResult.response.list[0]
                     Scaffold(
                         topBar = {
-                            TopAppBar(text = "Moscow, RU", elevation = 16.dp, isMainScreen = true)
+                            TopAppBar(text = city, elevation = 16.dp, isMainScreen = true, navController = navController, onSearchClicked = {navController.navigate(WeatherScreens.SearchScreen.name)})
                         }) { innerPadding ->
                         //innerPadding will take into account the height of the top app bar
                         Column(
