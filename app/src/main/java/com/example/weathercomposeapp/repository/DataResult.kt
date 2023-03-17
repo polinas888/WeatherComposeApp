@@ -1,6 +1,6 @@
 package com.example.weathercomposeapp.repository
 
-sealed class DataResult<out R> {
-    data class Ok<out T>(val response: T?) : DataResult<T>()
-    data class Error(val error: String?) : DataResult<Nothing>()
-}
+class DataResult<T, Boolean, E: Exception>(
+    var data: T? = null,
+    var loading: kotlin.Boolean? = null,
+    var error: E? = null)

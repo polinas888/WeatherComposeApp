@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +21,7 @@ import coil.compose.AsyncImage
 import com.example.weathercomposeapp.R
 import com.example.weathercomposeapp.components.TopAppBar
 import com.example.weathercomposeapp.model.DayWeather
+import com.example.weathercomposeapp.model.Weather
 import com.example.weathercomposeapp.navigation.WeatherScreens
 import com.example.weathercomposeapp.repository.DataResult
 import com.example.weathercomposeapp.utils.createDateString
@@ -29,48 +30,62 @@ import com.example.weathercomposeapp.utils.getWeatherImageUrl
 import kotlin.math.roundToInt
 
 @Composable
-fun MainScreen(navController: NavController, city: String, mainViewModel: MainViewModel = hiltViewModel()) {
-    val weatherStateResult = mainViewModel.weatherStateResult.value
+fun MainScreen(
+    navController: NavController,
+    city: String,
+    mainViewModel: MainViewModel = hiltViewModel()
+) {
+    var dataResult by remember {
+        mutableStateOf(DataResult<Weather, Boolean, Exception>(loading = true))
+    }
+
+    LaunchedEffect(Unit) {
+        dataResult = mainViewModel.getWeather(city)
+    }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        when (weatherStateResult) {
-            is DataResult.Ok -> {
-                if (weatherStateResult.response?.city?.name != null) {
-                    val todayWeather = weatherStateResult.response.list[0]
-                    Scaffold(
-                        topBar = {
-                            TopAppBar(text = city, elevation = 16.dp, isMainScreen = true, navController = navController, onSearchClicked = {navController.navigate(WeatherScreens.SearchScreen.name)})
-                        }) { innerPadding ->
-                        //innerPadding will take into account the height of the top app bar
-                        Column(
-                            modifier = Modifier.fillMaxSize().padding(innerPadding),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = createDateString(todayWeather.dt),
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(10.dp)
-                            )
-                            CirclePictureWithData(
-                                getWeatherImageUrl(todayWeather.weather[0].icon),
-                                todayWeather.temp.day.roundToInt().toString(),
-                                todayWeather.weather[0].main
-                            )
-                            WeatherConditions(todayWeather)
-                            Divider()
-                            SunsetSunriseInfo(todayWeather)
-                            Text(text = stringResource(R.string.this_week_text), style = MaterialTheme.typography.h6)
-                            WeekWeatherList(weatherStateResult.response.list)
-                        }
-                    }
+        if (dataResult.data != null) {
+            val todayWeather = dataResult.data!!.list[0]
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        text = city,
+                        elevation = 16.dp,
+                        isMainScreen = true,
+                        navController = navController,
+                        onSearchClicked = { navController.navigate(WeatherScreens.SearchScreen.name) })
+                }) { innerPadding ->
+                //innerPadding will take into account the height of the top app bar
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = createDateString(todayWeather.dt),
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    CirclePictureWithData(
+                        getWeatherImageUrl(todayWeather.weather[0].icon),
+                        todayWeather.temp.day.roundToInt().toString(),
+                        todayWeather.weather[0].main
+                    )
+                    WeatherConditions(todayWeather)
+                    Divider()
+                    SunsetSunriseInfo(todayWeather)
+                    Text(
+                        text = stringResource(R.string.this_week_text),
+                        style = MaterialTheme.typography.h6
+                    )
+                    WeekWeatherList(dataResult.data!!.list)
                 }
             }
-            is DataResult.Error -> {
-                Text(text = stringResource(R.string.no_weather_text))
-            }
-        }
-        if (mainViewModel.isLoading.value) {
+        } else if (dataResult.loading == true) {
             CircularProgressIndicator()
+        } else {
+            Text(text = stringResource(R.string.no_weather_text))
         }
     }
 }
