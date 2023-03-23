@@ -4,7 +4,7 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 
-@Component(modules = [AppModule::class])
+@Component(modules = [ModuleApp::class, ModuleDatabase::class])
 interface AppComponent {
     @Component.Factory
     interface Factory {

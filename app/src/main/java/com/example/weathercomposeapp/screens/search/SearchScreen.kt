@@ -1,4 +1,4 @@
-package com.example.weathercomposeapp.screens
+package com.example.weathercomposeapp.screens.search
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
