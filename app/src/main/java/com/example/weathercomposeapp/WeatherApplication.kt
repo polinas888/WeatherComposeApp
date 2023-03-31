@@ -2,6 +2,7 @@ package com.example.weathercomposeapp
 
 import android.app.Application
 import android.content.Context
+import com.example.weathercomposeapp.data.DatabaseFactory
 import com.example.weathercomposeapp.di.AppComponent
 import com.example.weathercomposeapp.di.DaggerAppComponent
 import dagger.hilt.android.HiltAndroidApp
@@ -13,6 +14,7 @@ class WeatherApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         appComponent = DaggerAppComponent.factory().create(applicationContext)
+        DatabaseFactory.initialize(this)
     }
 }
 

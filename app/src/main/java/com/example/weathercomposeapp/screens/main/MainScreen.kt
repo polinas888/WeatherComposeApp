@@ -21,6 +21,7 @@ import coil.compose.AsyncImage
 import com.example.weathercomposeapp.R
 import com.example.weathercomposeapp.components.TopAppBar
 import com.example.weathercomposeapp.model.DayWeather
+import com.example.weathercomposeapp.model.FavoriteLocation
 import com.example.weathercomposeapp.model.Weather
 import com.example.weathercomposeapp.navigation.WeatherScreens
 import com.example.weathercomposeapp.repository.DataResult
@@ -49,11 +50,15 @@ fun MainScreen(
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        text = city,
+                        text = "${city}, ${dataResult.data!!.city.country}",
                         elevation = 16.dp,
                         isMainScreen = true,
                         navController = navController,
-                        onSearchClicked = { navController.navigate(WeatherScreens.SearchScreen.name) })
+                        onSearchClicked = { navController.navigate(WeatherScreens.SearchScreen.name) },
+                        onFavoriteClicked = {
+                            val favoriteLocation = FavoriteLocation(city, dataResult.data!!.city.country)
+                            mainViewModel.saveFavoriteLocation(favoriteLocation)
+                        })
                 }) { innerPadding ->
                 //innerPadding will take into account the height of the top app bar
                 Column(

@@ -6,9 +6,9 @@ import com.example.weathercomposeapp.utils.Constants.DATABASE_NAME
 
 class DatabaseFactory private constructor(context: Context) {
 
-    val database: FavoriteLocationDatabase = Room.databaseBuilder(
+    val database: ForecastDatabase = Room.databaseBuilder(
         context.applicationContext,
-        FavoriteLocationDatabase::class.java,
+        ForecastDatabase::class.java,
         DATABASE_NAME
     ).build()
 

@@ -25,13 +25,15 @@ fun TopAppBar(
     elevation: Dp = 16.dp,
     isMainScreen: Boolean = false,
     onSearchClicked: (() -> Unit)? = null,
-    onNavigationIconClicked: (() -> Unit)? = null
+    onNavigationIconClicked: (() -> Unit)? = null,
+    onFavoriteClicked: (() -> Unit)? = null
 ) {
     TopAppBar(
         title = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text, textAlign = TextAlign.Center, modifier = Modifier
@@ -39,8 +41,8 @@ fun TopAppBar(
                 )
                 if (isMainScreen) {
                     Row(horizontalArrangement = Arrangement.End) {
-                        if (onSearchClicked != null) {
-                            IconButton(onClick = onSearchClicked) {
+                        onSearchClicked.let {
+                            IconButton(onClick = onSearchClicked!!) {
                                 Icon(
                                     Icons.Default.Search,
                                     "search icon"
@@ -53,10 +55,22 @@ fun TopAppBar(
             }
         },
         navigationIcon = {
-            if (onNavigationIconClicked != null) {
-                IconButton(onClick = onNavigationIconClicked) {
-                    if (navigationIcon != null) {
-                        Icon(navigationIcon, "back")
+            if (isMainScreen) {
+                onFavoriteClicked.let {
+                    IconButton(onClick = onFavoriteClicked!!) {
+                        Icon(
+                            Icons.Default.Favorite,
+                            contentDescription = "favorite icon",
+                            tint = Color.Red
+                        )
+                    }
+                }
+            } else {
+                onNavigationIconClicked.let {
+                    IconButton(onClick = onNavigationIconClicked!!) {
+                        if (navigationIcon != null) {
+                            Icon(navigationIcon, "back")
+                        }
                     }
                 }
             }
@@ -89,14 +103,14 @@ fun DropdownMenu(navController: NavController) {
     ) {
         menuItems.forEach { item ->
             DropdownMenuItem(onClick = {
-                when(item.label) {
+                when (item.label) {
                     MenuItemLabel.ABOUT -> navController.navigate(WeatherScreens.AboutScreen.name)
                     MenuItemLabel.FAVORITE -> navController.navigate(WeatherScreens.FavoriteScreen.name)
                     MenuItemLabel.SETTINGS -> navController.navigate(WeatherScreens.SettingScreen.name)
                 }
                 expanded = false
             }) {
-               MenuItemContent(icon = item.icon, label = item.label)
+                MenuItemContent(icon = item.icon, label = item.label)
             }
         }
     }
@@ -105,7 +119,12 @@ fun DropdownMenu(navController: NavController) {
 @Composable
 fun MenuItemContent(icon: ImageVector, label: MenuItemLabel) {
     Row {
-        Icon(icon, contentDescription = label.toString(), modifier = Modifier.padding(end = 6.dp), tint = Color.Gray)
+        Icon(
+            icon,
+            contentDescription = label.toString(),
+            modifier = Modifier.padding(end = 6.dp),
+            tint = Color.Gray
+        )
         Text(label.toString(), color = Color.Gray)
     }
 }
