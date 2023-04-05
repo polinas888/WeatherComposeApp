@@ -12,12 +12,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.weathercomposeapp.navigation.WeatherScreens
+import com.example.weathercomposeapp.screens.favorite.FavoriteViewModel
 
 @Composable
 fun TopAppBar(
     navController: NavController,
+    favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     text: String,
     modifier: Modifier = Modifier,
     navigationIcon: ImageVector? = null,
@@ -55,15 +58,23 @@ fun TopAppBar(
             }
         },
         navigationIcon = {
+            val isAlreadyFavorite =
+                favoriteViewModel.favoriteLocations.value.data?.filter { location ->
+                    location.city == text.split(",")[0]
+                }
             if (isMainScreen) {
-                onFavoriteClicked.let {
-                    IconButton(onClick = onFavoriteClicked!!) {
-                        Icon(
-                            Icons.Default.Favorite,
-                            contentDescription = "favorite icon",
-                            tint = Color.Red
-                        )
+                if (isAlreadyFavorite.isNullOrEmpty()) {
+                    onFavoriteClicked.let {
+                        IconButton(onClick = onFavoriteClicked!!) {
+                            Icon(
+                                Icons.Default.Favorite,
+                                contentDescription = "favorite icon",
+                                tint = Color.Red
+                            )
+                        }
                     }
+                } else {
+                    Box {}
                 }
             } else {
                 onNavigationIconClicked.let {

@@ -1,5 +1,6 @@
 package com.example.weathercomposeapp.screens.main
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +46,8 @@ fun MainScreen(
         dataResult = mainViewModel.getWeather(city)
     }
 
+    var isFavoriteClicked by remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         if (dataResult.data != null) {
             val todayWeather = dataResult.data!!.list[0]
@@ -58,6 +62,7 @@ fun MainScreen(
                         onFavoriteClicked = {
                             val favoriteLocation = FavoriteLocation(city, dataResult.data!!.city.country)
                             mainViewModel.saveFavoriteLocation(favoriteLocation)
+                            isFavoriteClicked = true
                         })
                 }) { innerPadding ->
                 //innerPadding will take into account the height of the top app bar
@@ -92,6 +97,11 @@ fun MainScreen(
         } else {
             Text(text = stringResource(R.string.no_weather_text))
         }
+    }
+
+    if (isFavoriteClicked) {
+        Toast.makeText(LocalContext.current, "You saved it to favorites", Toast.LENGTH_LONG).show()
+        isFavoriteClicked = false
     }
 }
 

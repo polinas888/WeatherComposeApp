@@ -1,5 +1,6 @@
 package com.example.weathercomposeapp.data
 
+import androidx.lifecycle.LiveData
 import com.example.weathercomposeapp.model.FavoriteLocation
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
