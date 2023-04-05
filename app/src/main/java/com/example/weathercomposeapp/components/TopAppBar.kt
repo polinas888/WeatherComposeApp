@@ -58,38 +58,51 @@ fun TopAppBar(
             }
         },
         navigationIcon = {
-            val isAlreadyFavorite =
-                favoriteViewModel.favoriteLocations.value.data?.filter { location ->
-                    location.city == text.split(",")[0]
-                }
             if (isMainScreen) {
-                if (isAlreadyFavorite.isNullOrEmpty()) {
-                    onFavoriteClicked.let {
-                        IconButton(onClick = onFavoriteClicked!!) {
-                            Icon(
-                                Icons.Default.Favorite,
-                                contentDescription = "favorite icon",
-                                tint = Color.Red
-                            )
-                        }
-                    }
-                } else {
-                    Box {}
-                }
+                FavoriteItem(favoriteViewModel, text, onFavoriteClicked)
             } else {
-                onNavigationIconClicked.let {
-                    IconButton(onClick = onNavigationIconClicked!!) {
-                        if (navigationIcon != null) {
-                            Icon(navigationIcon, "back")
-                        }
-                    }
-                }
+                NavigationItem(onNavigationIconClicked, navigationIcon)
             }
         },
         backgroundColor = backgroundColor,
         elevation = elevation,
         modifier = modifier.padding(6.dp)
     )
+}
+
+@Composable
+fun FavoriteItem(favoriteViewModel: FavoriteViewModel, text: String, onFavoriteClicked: (() -> Unit)?) {
+    val isAlreadyFavorite =
+        favoriteViewModel.favoriteLocations.value.data?.filter { location ->
+            location.city == text.split(",")[0]
+        }
+
+        if (isAlreadyFavorite.isNullOrEmpty()) {
+            onFavoriteClicked.let {
+                if (onFavoriteClicked != null) {
+                    IconButton(onClick = onFavoriteClicked) {
+                        Icon(
+                            Icons.Default.Favorite,
+                            contentDescription = "favorite icon",
+                            tint = Color.Red
+                        )
+                    }
+                }
+            }
+        } else {
+            Box {}
+        }
+    }
+
+@Composable
+fun NavigationItem(onNavigationIconClicked: (() -> Unit)?, navigationIcon: ImageVector?) {
+    if (onNavigationIconClicked != null) {
+        IconButton(onClick = onNavigationIconClicked) {
+            if (navigationIcon != null) {
+                Icon(navigationIcon, "back")
+            }
+        }
+    }
 }
 
 @Composable
