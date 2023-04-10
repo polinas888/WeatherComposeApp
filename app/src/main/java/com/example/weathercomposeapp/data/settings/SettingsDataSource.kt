@@ -4,21 +4,21 @@ import com.example.weathercomposeapp.model.MetricSystem
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class MetricSystemDataSource @Inject constructor(metricSystemDao: MetricSystemDao) :
-    MetricSystemDao {
-    private val metricSystemDao by lazy {
-        metricSystemDao
+class SettingsDataSource @Inject constructor(settingsDao: SettingsDao) :
+    SettingsDao {
+    private val settingsDao by lazy {
+        settingsDao
     }
 
     override suspend fun insertMetricSystem(metricSystem: MetricSystem) {
-        metricSystemDao.insertMetricSystem(metricSystem)
+        settingsDao.insertMetricSystem(metricSystem)
     }
 
     override fun getMetricSystems(): Flow<List<MetricSystem>> {
-        return metricSystemDao.getMetricSystems()
+        return settingsDao.getMetricSystems()
     }
 
     override suspend fun deleteAllMetricSystems() {
-        metricSystemDao.deleteAllMetricSystems()
+        settingsDao.deleteAllMetricSystems()
     }
 }

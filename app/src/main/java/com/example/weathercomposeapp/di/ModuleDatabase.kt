@@ -3,10 +3,10 @@ package com.example.weathercomposeapp.di
 import com.example.weathercomposeapp.data.DatabaseFactory
 import com.example.weathercomposeapp.data.favorites.FavoriteLocationDao
 import com.example.weathercomposeapp.data.favorites.FavoriteLocationDataSource
-import com.example.weathercomposeapp.data.settings.MetricSystemDao
-import com.example.weathercomposeapp.data.settings.MetricSystemDataSource
+import com.example.weathercomposeapp.data.settings.SettingsDao
+import com.example.weathercomposeapp.data.settings.SettingsDataSource
 import com.example.weathercomposeapp.repository.favorites.FavoriteLocationsRepositoryImp
-import com.example.weathercomposeapp.repository.settings.MetricSystemRepositoryImp
+import com.example.weathercomposeapp.repository.settings.SettingsRepositoryImp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,17 +31,17 @@ object ModuleDatabase {
     }
 
     @Provides
-    fun provideMetricSystemDao(): MetricSystemDao {
-        return DatabaseFactory.get().database.metricSystemDao()
+    fun provideMetricSystemDao(): SettingsDao {
+        return DatabaseFactory.get().database.settingsDao()
     }
 
     @Provides
-    fun  provideMetricSystemDataSource(metricSystemDao: MetricSystemDao) : MetricSystemDataSource {
-        return MetricSystemDataSource(metricSystemDao)
+    fun  provideMetricSystemDataSource(settingsDao: SettingsDao) : SettingsDataSource {
+        return SettingsDataSource(settingsDao)
     }
 
     @Provides
-    fun provideMetricSystemRepositoryImp(metricSystemDataSource: MetricSystemDataSource) : MetricSystemRepositoryImp {
-        return MetricSystemRepositoryImp(metricSystemDataSource)
+    fun provideMetricSystemRepositoryImp(settingsDataSource: SettingsDataSource) : SettingsRepositoryImp {
+        return SettingsRepositoryImp(settingsDataSource)
     }
 }

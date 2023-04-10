@@ -1,10 +1,17 @@
-package com.example.weathercomposeapp.repository.settings
+package com.example.weathercomposeapp.data.settings
 
+import androidx.room.*
 import com.example.weathercomposeapp.model.MetricSystem
 import kotlinx.coroutines.flow.Flow
 
-interface MetricSystemRepository {
+@Dao
+interface SettingsDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMetricSystem(metricSystem: MetricSystem)
+
+    @Query("SELECT * FROM metric_system")
     fun getMetricSystems(): Flow<List<MetricSystem>>
+
+    @Query("DELETE FROM metric_system")
     suspend fun deleteAllMetricSystems()
 }
