@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weathercomposeapp.model.FavoriteLocation
 import com.example.weathercomposeapp.repository.DataResult
-import com.example.weathercomposeapp.repository.FavoriteLocationsRepository
+import com.example.weathercomposeapp.repository.favorites.FavoriteLocationsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

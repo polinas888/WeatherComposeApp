@@ -1,4 +1,4 @@
-package com.example.weathercomposeapp.data
+package com.example.weathercomposeapp.data.favorites
 
 import androidx.room.*
 import com.example.weathercomposeapp.model.FavoriteLocation

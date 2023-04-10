@@ -1,11 +1,11 @@
-package com.example.weathercomposeapp.data
+package com.example.weathercomposeapp.data.favorites
 
-import androidx.lifecycle.LiveData
 import com.example.weathercomposeapp.model.FavoriteLocation
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class FavoriteLocationDataSource @Inject constructor(favoriteLocationDao: FavoriteLocationDao) : FavoriteLocationDao {
+class FavoriteLocationDataSource @Inject constructor(favoriteLocationDao: FavoriteLocationDao) :
+    FavoriteLocationDao {
         private val favoriteLocationService: FavoriteLocationDao by lazy {
             favoriteLocationDao
         }

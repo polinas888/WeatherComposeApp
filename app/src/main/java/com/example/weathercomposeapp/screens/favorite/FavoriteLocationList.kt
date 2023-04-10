@@ -1,6 +1,7 @@
 package com.example.weathercomposeapp.screens.favorite
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,10 +19,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.weathercomposeapp.model.FavoriteLocation
+import com.example.weathercomposeapp.navigation.WeatherScreens
 
 @Composable
-fun FavoriteLocationList(listItems: List<FavoriteLocation>, onDeleteClicked: (favoriteLocation: FavoriteLocation) -> Unit) {
+fun FavoriteLocationList(navController: NavController, listItems: List<FavoriteLocation>, onDeleteClicked: (favoriteLocation: FavoriteLocation) -> Unit) {
     Box(modifier = Modifier
         .padding(4.dp)
         .fillMaxWidth()
@@ -30,7 +33,7 @@ fun FavoriteLocationList(listItems: List<FavoriteLocation>, onDeleteClicked: (fa
     ) {
         LazyColumn {
             items(items = listItems) { favoriteLocation ->
-                FavoriteLocationItem(favoriteLocation, onDeleteClicked)
+                FavoriteLocationItem(navController, favoriteLocation, onDeleteClicked)
             }
         }
     }
@@ -38,6 +41,7 @@ fun FavoriteLocationList(listItems: List<FavoriteLocation>, onDeleteClicked: (fa
 
 @Composable
 fun FavoriteLocationItem(
+    navController: NavController,
     favoriteLocation: FavoriteLocation,
     onDeleteClicked: (favoriteLocation: FavoriteLocation) -> Unit
 ) {
@@ -46,6 +50,7 @@ fun FavoriteLocationItem(
             .fillMaxWidth()
             .padding(4.dp)
             .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp, bottomEnd = 30.dp))
+            .clickable { navController.navigate("${WeatherScreens.MainScreen.name}/${favoriteLocation.city}") }
             .background(Color(204, 255, 255, 255)), contentAlignment = Alignment.Center
     ) {
         Row(

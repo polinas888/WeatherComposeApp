@@ -1,13 +1,16 @@
 package com.example.weathercomposeapp.di
 
-import com.example.weathercomposeapp.data.FavoriteLocationDataSource
+import com.example.weathercomposeapp.data.favorites.FavoriteLocationDataSource
+import com.example.weathercomposeapp.data.settings.MetricSystemDataSource
 import com.example.weathercomposeapp.network.ApiRetrofitFactory
 import com.example.weathercomposeapp.network.WeatherApi
 import com.example.weathercomposeapp.network.WeatherDataSource
-import com.example.weathercomposeapp.repository.FavoriteLocationsRepositoryImp
-import com.example.weathercomposeapp.repository.FavoriteLocationsRepository
-import com.example.weathercomposeapp.repository.WeatherRepository
-import com.example.weathercomposeapp.repository.WeatherRepositoryImp
+import com.example.weathercomposeapp.repository.favorites.FavoriteLocationsRepositoryImp
+import com.example.weathercomposeapp.repository.favorites.FavoriteLocationsRepository
+import com.example.weathercomposeapp.repository.settings.MetricSystemRepository
+import com.example.weathercomposeapp.repository.settings.MetricSystemRepositoryImp
+import com.example.weathercomposeapp.repository.weather.WeatherRepository
+import com.example.weathercomposeapp.repository.weather.WeatherRepositoryImp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,5 +37,11 @@ class ModuleApp {
     @Singleton
     fun provideFavoriteLocationsRepository(favoriteLocationDataSource: FavoriteLocationDataSource) : FavoriteLocationsRepository {
         return FavoriteLocationsRepositoryImp(favoriteLocationDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMetricSystemRepository(metricSystemDataSource: MetricSystemDataSource) : MetricSystemRepository {
+        return MetricSystemRepositoryImp(metricSystemDataSource)
     }
 }

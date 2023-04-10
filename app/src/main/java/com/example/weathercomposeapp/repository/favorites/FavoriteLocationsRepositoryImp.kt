@@ -1,11 +1,12 @@
-package com.example.weathercomposeapp.repository
+package com.example.weathercomposeapp.repository.favorites
 
-import com.example.weathercomposeapp.data.FavoriteLocationDataSource
+import com.example.weathercomposeapp.data.favorites.FavoriteLocationDataSource
 import com.example.weathercomposeapp.model.FavoriteLocation
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class FavoriteLocationsRepositoryImp @Inject constructor(private val favoriteLocationDataSource: FavoriteLocationDataSource): FavoriteLocationsRepository {
+class FavoriteLocationsRepositoryImp @Inject constructor(private val favoriteLocationDataSource: FavoriteLocationDataSource):
+    FavoriteLocationsRepository {
     override suspend fun insertFavoriteLocation(favoriteLocation: FavoriteLocation) {
         favoriteLocationDataSource.insertFavoriteLocation(favoriteLocation)
     }

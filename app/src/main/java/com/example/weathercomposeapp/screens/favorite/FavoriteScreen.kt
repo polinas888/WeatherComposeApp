@@ -44,6 +44,7 @@ fun FavoriteScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     FavoriteLocationList(
+                        navController = navController,
                         listItems = favoriteLocations.data!!,
                         onDeleteClicked = { favoriteLocation ->
                             favoritesViewModel.deleteFavoriteLocation(favoriteLocation)

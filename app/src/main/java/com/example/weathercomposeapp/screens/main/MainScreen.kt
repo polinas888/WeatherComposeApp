@@ -1,5 +1,7 @@
 package com.example.weathercomposeapp.screens.main
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,12 +40,19 @@ fun MainScreen(
     city: String,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
+    val sharedPreferences: SharedPreferences = LocalContext.current.getSharedPreferences("my_preferences", MODE_PRIVATE)
+    var lastOpenedCity = ""
+    if (city != "city") {
+        sharedPreferences.edit().putString("city", city).apply()
+    }
+    lastOpenedCity = sharedPreferences.getString("city", "Moscow").toString()
+
     var dataResult by remember {
         mutableStateOf(DataResult<Weather, Boolean, Exception>(loading = true))
     }
 
     LaunchedEffect(Unit) {
-        dataResult = mainViewModel.getWeather(city)
+        dataResult = mainViewModel.getWeather(lastOpenedCity)
     }
 
     var isFavoriteClicked by remember { mutableStateOf(false) }
@@ -54,13 +63,14 @@ fun MainScreen(
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        text = "${city}, ${dataResult.data!!.city.country}",
+                        text = "${lastOpenedCity}, ${dataResult.data!!.city.country}",
                         elevation = 16.dp,
                         isMainScreen = true,
                         navController = navController,
                         onSearchClicked = { navController.navigate(WeatherScreens.SearchScreen.name) },
                         onFavoriteClicked = {
-                            val favoriteLocation = FavoriteLocation(city, dataResult.data!!.city.country)
+                            val favoriteLocation =
+                                FavoriteLocation(city, dataResult.data!!.city.country)
                             mainViewModel.saveFavoriteLocation(favoriteLocation)
                             isFavoriteClicked = true
                         })
