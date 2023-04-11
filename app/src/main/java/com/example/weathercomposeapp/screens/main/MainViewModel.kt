@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weathercomposeapp.model.FavoriteLocation
+import com.example.weathercomposeapp.model.MetricSystem
 import com.example.weathercomposeapp.model.Weather
 import com.example.weathercomposeapp.repository.DataResult
 import com.example.weathercomposeapp.repository.favorites.FavoriteLocationsRepository
@@ -16,8 +17,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val weatherRepository: WeatherRepository, private val favoriteLocationsRepository: FavoriteLocationsRepository) :
     ViewModel() {
 
-    suspend fun getWeather(city: String): DataResult<Weather, Boolean, Exception> {
-        return weatherRepository.getWeather(city)
+    suspend fun getWeather(city: String, metricSystem: MetricSystem): DataResult<Weather, Boolean, Exception> {
+        return weatherRepository.getWeather(city, metricSystem.metricSystem)
     }
 
     fun saveFavoriteLocation(favoriteLocation: FavoriteLocation) {

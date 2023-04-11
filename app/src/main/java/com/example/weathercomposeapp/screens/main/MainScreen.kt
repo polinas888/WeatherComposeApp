@@ -29,16 +29,21 @@ import com.example.weathercomposeapp.model.FavoriteLocation
 import com.example.weathercomposeapp.model.Weather
 import com.example.weathercomposeapp.navigation.WeatherScreens
 import com.example.weathercomposeapp.repository.DataResult
+import com.example.weathercomposeapp.screens.settings.SettingsViewModel
 import com.example.weathercomposeapp.utils.createDateString
 import com.example.weathercomposeapp.utils.createTimeString
 import com.example.weathercomposeapp.utils.getWeatherImageUrl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 @Composable
 fun MainScreen(
     navController: NavController,
     city: String,
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
     val sharedPreferences: SharedPreferences = LocalContext.current.getSharedPreferences("my_preferences", MODE_PRIVATE)
     var lastOpenedCity = ""
@@ -50,9 +55,16 @@ fun MainScreen(
     var dataResult by remember {
         mutableStateOf(DataResult<Weather, Boolean, Exception>(loading = true))
     }
+    var metricSystem by remember {
+        mutableStateOf("metric")
+    }
 
     LaunchedEffect(Unit) {
-        dataResult = mainViewModel.getWeather(lastOpenedCity)
+        val metricSystems = settingsViewModel.getMetricSystems().first() //returns the first element emitted by the flow
+        metricSystem = metricSystems[0].metricSystem
+        dataResult = withContext(Dispatchers.IO) {
+            mainViewModel.getWeather(lastOpenedCity, metricSystems[0])
+        }
     }
 
     var isFavoriteClicked by remember { mutableStateOf(false) }
@@ -92,7 +104,7 @@ fun MainScreen(
                         todayWeather.temp.day.roundToInt().toString(),
                         todayWeather.weather[0].main
                     )
-                    WeatherConditions(todayWeather)
+                    WeatherConditions(todayWeather, metricSystem)
                     Divider()
                     SunsetSunriseInfo(todayWeather)
                     Text(
@@ -194,7 +206,7 @@ fun SunsetInfo(sunsetTime: Int) {
 
 
 @Composable
-fun WeatherConditions(todayWeather: DayWeather) {
+fun WeatherConditions(todayWeather: DayWeather, metricSystem: String) {
     Row(
         modifier = Modifier
             .padding(10.dp)
@@ -214,13 +226,14 @@ fun WeatherConditions(todayWeather: DayWeather) {
         WeatherConditionItem(
             image = R.drawable.wind,
             description = "wind picture",
-            conditionValue = todayWeather.speed.toInt()
+            conditionValue = todayWeather.speed.toInt(),
+            metricSystem = metricSystem
         )
     }
 }
 
 @Composable
-fun WeatherConditionItem(image: Int, description: String, conditionValue: Int) {
+fun WeatherConditionItem(image: Int, description: String, conditionValue: Int, metricSystem: String = "metric") {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -230,13 +243,15 @@ fun WeatherConditionItem(image: Int, description: String, conditionValue: Int) {
             contentDescription = description,
             modifier = Modifier.size(22.dp)
         )
-        fun getConditionString() =
-            when (image) {
+        fun getConditionString(): String {
+            val unit = if (metricSystem == "imperial") "mph" else "m/sec"
+            return when (image) {
                 R.drawable.humidity -> "$conditionValue%"
                 R.drawable.pressure -> "$conditionValue psi"
-                R.drawable.wind -> "$conditionValue m/sec"
+                R.drawable.wind -> "$conditionValue $unit"
                 else -> " "
             }
+        }
         Text(text = getConditionString(), modifier = Modifier.padding(4.dp))
     }
 }

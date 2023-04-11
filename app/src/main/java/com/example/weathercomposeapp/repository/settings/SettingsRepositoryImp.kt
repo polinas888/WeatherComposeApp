@@ -11,9 +11,9 @@ class SettingsRepositoryImp @Inject constructor(private val settingsDataSource: 
         settingsDataSource.insertMetricSystem(metricSystem)
     }
 
-    override fun getMetricSystems(): Flow<List<MetricSystem>> {
-        return settingsDataSource.getMetricSystems()
-    }
+    override  fun getMetricSystems(): Flow<List<MetricSystem>> {
+           return settingsDataSource.getMetricSystems()
+        }
 
     override suspend fun deleteAllMetricSystems() {
         settingsDataSource.deleteAllMetricSystems()
