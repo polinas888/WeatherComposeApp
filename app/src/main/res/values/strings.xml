@@ -4,7 +4,9 @@
     <string name="no_weather_text">Weather data is not available.</string>
     <string name="favorite_cities_title">Favorite Cities</string>
     <string name="settings">Settings</string>
+    <string name="about">About</string>
     <string name="change_measurement">Change units of measurement</string>
+    <string name="weather_api">Weather Api</string>
     <string name="celsius">Celsius °C</string>
     <string name="fahrenheit">Fahrenheit °F</string>
     <string name="no_favorites_text">You don`t have favorite cities yet</string>
